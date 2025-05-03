@@ -7,6 +7,8 @@ import io.github.katarem.katarina.config.ConfigProperties;
 import io.github.katarem.katarina.model.mastery.ChampionMasteryDto;
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 @Component
 @AllArgsConstructor
 public class ChampionMasteryClient {
@@ -50,7 +52,7 @@ public class ChampionMasteryClient {
     public int getTotalMasteryScore(String puuid) {
         String endpoint = String.format("v4/scores/by-puuid/%s?api_key=%s", puuid, configProperties.getApiKey());
         String url = String.format(URL_TEMPLATE, "euw1", endpoint);
-        return restTemplate.getForObject(url, Integer.class);
+        return Optional.ofNullable(restTemplate.getForObject(url, Integer.class)).orElse(0);
     }
 
 }
