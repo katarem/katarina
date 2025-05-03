@@ -10,7 +10,7 @@
     </parent>
     <groupId>io.github.katarem</groupId>
     <artifactId>katarina</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <name>katarina</name>
     <description>Java Library to fetch data from Riot's API</description>
     <packaging>jar</packaging>
