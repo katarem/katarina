@@ -1,0 +1,54 @@
+name: Publish package to GitHub Packages
+on:
+  push:
+    branches:
+      - master
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          java-version: '21'
+          distribution: 'temurin'
+
+      - name: Cache Maven packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.m2
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+          restore-keys: |
+            ${{ runner.os }}-maven-
+
+      - name: Build with Maven
+        run: mvn -B package --file pom.xml
+
+      - name: Publish to GitHub Packages
+        run: mvn deploy -B
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: target/*.jar
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+            - name: Generate Changelog
+                run: |
+                  git log --no-merges --oneline ${{ github.event.before }}..${{ github.sha }} > CHANGELOG.md
+                  echo "### Release Notes" > changelog.md
+                  cat CHANGELOG.md >> changelog.md
+
+      - name: Upload Release Notes
+        uses: softprops/action-gh-release@v1
+        with:
+          release_name: "Release ${{ github.sha }}"
+          body: |
+            $(cat changelog.md)
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
