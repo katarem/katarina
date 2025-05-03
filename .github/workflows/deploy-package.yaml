@@ -43,14 +43,3 @@ jobs:
           git log --no-merges --oneline $LAST_TAG..${{ github.sha }} > CHANGELOG.md
           echo "### Release Notes" > changelog.md
           cat CHANGELOG.md >> changelog.md
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v2
-        with:
-          tag_name: 1.0.0
-          files: target/*.jar
-          release_name: "Release ${{ github.sha }}"
-          body: |
-            $(cat changelog.md)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
