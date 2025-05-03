@@ -32,35 +32,14 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Get Maven version
-        id: get_version
-        run: |
-          VERSION=$(mvn help:evaluate -Dexpression=project.version -q -DforceStdout)
-          echo "VERSION=$VERSION" >> $GITHUB_ENV
-
-      - name: Create Tag
-        run: |
-          git tag "${{ env.VERSION }}"
-          git push origin "${{ env.VERSION }}"
-
-      - name: Create GitHub Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: target/*.jar
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
       - name: Generate Changelog
         run: |
-          git log --no-merges --oneline ${{ github.event.before }}..${{ github.sha }} > CHANGELOG.md
+          if git describe --tags --abbrev=0 --exclude="${{ github.ref_name }}" > /dev/null 2>&1; then
+            LAST_TAG=$(git describe --tags --abbrev=0 --exclude="${{ github.ref_name }}")
+            git log --no-merges --oneline $LAST_TAG..HEAD > CHANGELOG.md
+          else
+            git log --no-merges --oneline > CHANGELOG.md
+          fi
+          git log --no-merges --oneline $LAST_TAG..${{ github.sha }} > CHANGELOG.md
           echo "### Release Notes" > changelog.md
           cat CHANGELOG.md >> changelog.md
-
-      - name: Upload Release Notes
-        uses: softprops/action-gh-release@v1
-        with:
-          release_name: "Release ${{ github.sha }}"
-          body: |
-            $(cat changelog.md)
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
