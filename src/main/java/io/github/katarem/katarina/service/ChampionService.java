@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -20,16 +21,16 @@ public class ChampionService {
     private final ChampionClient championClient;
     private final ChampionMasteryClient championMasteryClient;
 
-    public ChampionMasteryDto[] getMasteries(AccountDto accountDto) {
-        return championMasteryClient.getMasteries(accountDto.getPuuid());
+    public List<ChampionMasteryDto> getMasteries(AccountDto accountDto) {
+        return Arrays.asList(championMasteryClient.getMasteries(accountDto.getPuuid()));
     }
 
-    public ChampionMasteryDto[] getMasteries(AccountDto accountDto, Integer count){
-        return championMasteryClient.getMasteries(accountDto.getPuuid(), count);
+    public List<ChampionMasteryDto> getMasteries(AccountDto accountDto, Integer count) {
+        return Arrays.asList(championMasteryClient.getMasteries(accountDto.getPuuid(), count));
     }
 
     public Optional<ChampionMasteryDto> getMastery(AccountDto accountDto, long id) {
-        return Optional.ofNullable(championMasteryClient.getMastery(accountDto.getPuuid(), id));
+        return championMasteryClient.getMastery(accountDto.getPuuid(), id);
     }
 
     public Optional<ChampionMasteryDto> getMastery(AccountDto accountDto,
@@ -39,10 +40,10 @@ public class ChampionService {
 
         var masteries = getMasteries(accountDto);
         var champion = getChampion(championName, version, language);
-        return champion.flatMap(championDto -> Arrays
-                .stream(masteries).filter(mastery ->
-                        mastery.getChampionId() == Long.parseLong(championDto.key))
-                .findFirst());
+        return champion.flatMap(championDto ->
+                masteries.stream()
+                        .filter(mastery -> mastery.getChampionId() == Long.parseLong(championDto.getKey()))
+                        .findFirst());
 
     }
 
@@ -55,11 +56,11 @@ public class ChampionService {
         return Optional.ofNullable(champs.get(id));
     }
 
-    public ChampionInfoDto getChampionsRotation(String region){
+    public Optional<ChampionInfoDto> getChampionsRotation(String region) {
         return championClient.getRotationInfo(region);
     }
 
-    public Integer getTotalMasteryScore(AccountDto accountDto){
+    public Integer getTotalMasteryScore(AccountDto accountDto) {
         return championMasteryClient.getTotalMasteryScore(accountDto.getPuuid());
     }
 

@@ -6,6 +6,8 @@ import org.springframework.web.client.RestTemplate;
 import io.github.katarem.katarina.model.AccountDto;
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 @Component
 @AllArgsConstructor
 public class AccountClient {
@@ -15,9 +17,9 @@ public class AccountClient {
     /**
      * Get account by riot id
      */
-    public AccountDto getAccount(String gameName, String tagLine, String region,String apiKey) {
+    public Optional<AccountDto> getAccount(String gameName, String tagLine, String region, String apiKey) {
         String url = String.format("https://%s.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/%s?api_key=%s",
                                region, gameName, tagLine, apiKey);
-        return restTemplate.getForObject(url, AccountDto.class);
+        return Optional.ofNullable(restTemplate.getForObject(url, AccountDto.class));
     }
 }

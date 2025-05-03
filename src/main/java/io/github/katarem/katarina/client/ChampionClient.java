@@ -2,6 +2,7 @@ package io.github.katarem.katarina.client;
 
 import java.util.Collections;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
@@ -24,10 +25,10 @@ public class ChampionClient {
      * Returns champion rotations, including free-to-play and low-level free-to-play
      * rotations
      */
-    public ChampionInfoDto getRotationInfo(String region) {
+    public Optional<ChampionInfoDto> getRotationInfo(String region) {
         String url = String.format(URL_ROTATION_TEMPLATE,
                 region, configProperties.getApiKey());
-        return restTemplate.getForObject(url, ChampionInfoDto.class);
+        return Optional.ofNullable(restTemplate.getForObject(url, ChampionInfoDto.class));
     }
 
     /**

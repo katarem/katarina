@@ -7,6 +7,8 @@ import io.github.katarem.katarina.config.ConfigProperties;
 import io.github.katarem.katarina.model.SummonerDto;
 import lombok.AllArgsConstructor;
 
+import java.util.Optional;
+
 @Component
 @AllArgsConstructor
 public class SummonerClient {
@@ -18,10 +20,10 @@ public class SummonerClient {
     /**
      * Get a summoner by PUUID.
      */
-    public SummonerDto getSummoner(String gameName, String tagLine, String region) {
+    public Optional<SummonerDto> getSummoner(String gameName, String tagLine, String region) {
         String url = String.format(URL_TEMPLATE,
                 region, gameName, tagLine, configProperties.getApiKey());
-        return restTemplate.getForObject(url, SummonerDto.class);
+        return Optional.ofNullable(restTemplate.getForObject(url, SummonerDto.class));
     }
 
 }

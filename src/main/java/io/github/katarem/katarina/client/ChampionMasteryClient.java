@@ -27,10 +27,10 @@ public class ChampionMasteryClient {
      * Get a champion mastery by puuid and champion ID.
      * @param puuid Player Universal Unique Identifier. Exact length of 78 characters. (Encrypted)
      */
-    public ChampionMasteryDto getMastery(String puuid, long championId) {
+    public Optional<ChampionMasteryDto> getMastery(String puuid, long championId) {
         String endpoint = String.format("v4/champion-masteries/by-puuid/%s/by-champion/%d?api_key=%s", puuid, championId, configProperties.getApiKey());
         String url = String.format(URL_TEMPLATE, "euw1", endpoint);
-        return restTemplate.getForObject(url, ChampionMasteryDto.class);
+        return Optional.ofNullable(restTemplate.getForObject(url, ChampionMasteryDto.class));
     }
 
     /**
@@ -42,7 +42,7 @@ public class ChampionMasteryClient {
         String endpoint = String.format("v4/champion-masteries/by-puuid/%s/top?api_key=%s", puuid, configProperties.getApiKey());
         if (count != null) endpoint = endpoint.concat("&count=" + count);
         String url = String.format(URL_TEMPLATE, "euw1", endpoint);
-        return restTemplate.getForObject(url, ChampionMasteryDto[].class);
+        return Optional.ofNullable(restTemplate.getForObject(url, ChampionMasteryDto[].class)).orElse(new ChampionMasteryDto[]{});
     }
 
     /**
