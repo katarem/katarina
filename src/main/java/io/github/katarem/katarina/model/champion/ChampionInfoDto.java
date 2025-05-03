@@ -1,4 +1,4 @@
-package io.github.katarem.katarina.model;
+package io.github.katarem.katarina.model.champion;
 
 import lombok.Data;
 

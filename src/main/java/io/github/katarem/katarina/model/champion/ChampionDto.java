@@ -2,6 +2,7 @@ package io.github.katarem.katarina.model.champion;
 
 import java.util.List;
 
+import io.github.katarem.katarina.model.Image;
 import lombok.Data;
 
 @Data

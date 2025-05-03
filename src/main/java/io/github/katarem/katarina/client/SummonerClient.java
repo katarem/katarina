@@ -13,12 +13,13 @@ public class SummonerClient {
 
     private final RestTemplate restTemplate;
     private final ConfigProperties configProperties;
+    private static final String URL_TEMPLATE = "https://%s.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/%s?api_key=%s";
 
     /**
      * Get a summoner by PUUID.
      */
     public SummonerDto getSummoner(String gameName, String tagLine, String region) {
-        String url = String.format("https://%s.api.riotgames.com/riot/account/v1/accounts/by-riot-id/%s/%s?api_key=%s",
+        String url = String.format(URL_TEMPLATE,
                 region, gameName, tagLine, configProperties.getApiKey());
         return restTemplate.getForObject(url, SummonerDto.class);
     }

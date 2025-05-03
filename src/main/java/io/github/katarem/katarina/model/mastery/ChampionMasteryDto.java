@@ -1,4 +1,4 @@
-package io.github.katarem.katarina.model;
+package io.github.katarem.katarina.model.mastery;
 
 import java.util.List;
 

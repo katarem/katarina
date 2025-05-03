@@ -4,7 +4,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 import io.github.katarem.katarina.config.ConfigProperties;
-import io.github.katarem.katarina.model.ChampionMasteryDto;
+import io.github.katarem.katarina.model.mastery.ChampionMasteryDto;
 import lombok.AllArgsConstructor;
 
 @Component
@@ -12,12 +12,12 @@ import lombok.AllArgsConstructor;
 public class ChampionMasteryClient {
 
     private final RestTemplate restTemplate;
-    private final String urlTemplate = "https://%s.api.riotgames.com/lol/champion-mastery/%s";
+    private static final String URL_TEMPLATE = "https://%s.api.riotgames.com/lol/champion-mastery/%s";
     private final ConfigProperties configProperties;
 
     public ChampionMasteryDto[] getMasteries(String puuid) {
         String endpoint = String.format("v4/champion-masteries/by-puuid/%s?api_key=%s", puuid, configProperties.getApiKey());
-        String url = String.format(urlTemplate, "euw1", endpoint);
+        String url = String.format(URL_TEMPLATE, "euw1", endpoint);
         return restTemplate.getForObject(url, ChampionMasteryDto[].class);
     }
 
@@ -27,7 +27,7 @@ public class ChampionMasteryClient {
      */
     public ChampionMasteryDto getMastery(String puuid, long championId) {
         String endpoint = String.format("v4/champion-masteries/by-puuid/%s/by-champion/%d?api_key=%s", puuid, championId, configProperties.getApiKey());
-        String url = String.format(urlTemplate, "euw1", endpoint);
+        String url = String.format(URL_TEMPLATE, "euw1", endpoint);
         return restTemplate.getForObject(url, ChampionMasteryDto.class);
     }
 
@@ -38,8 +38,8 @@ public class ChampionMasteryClient {
      */
     public ChampionMasteryDto[] getMasteries(String puuid, Integer count) {
         String endpoint = String.format("v4/champion-masteries/by-puuid/%s/top?api_key=%s", puuid, configProperties.getApiKey());
-        if (count != null) endpoint.concat("&count=" + count);
-        String url = String.format(urlTemplate, "euw1", endpoint);
+        if (count != null) endpoint = endpoint.concat("&count=" + count);
+        String url = String.format(URL_TEMPLATE, "euw1", endpoint);
         return restTemplate.getForObject(url, ChampionMasteryDto[].class);
     }
 
@@ -49,7 +49,7 @@ public class ChampionMasteryClient {
      */
     public int getTotalMasteryScore(String puuid) {
         String endpoint = String.format("v4/scores/by-puuid/%s?api_key=%s", puuid, configProperties.getApiKey());
-        String url = String.format(urlTemplate, "euw1", endpoint);
+        String url = String.format(URL_TEMPLATE, "euw1", endpoint);
         return restTemplate.getForObject(url, Integer.class);
     }
 
