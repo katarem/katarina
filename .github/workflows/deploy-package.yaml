@@ -38,11 +38,12 @@ jobs:
           files: target/*.jar
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-            - name: Generate Changelog
-                run: |
-                  git log --no-merges --oneline ${{ github.event.before }}..${{ github.sha }} > CHANGELOG.md
-                  echo "### Release Notes" > changelog.md
-                  cat CHANGELOG.md >> changelog.md
+
+      - name: Generate Changelog
+        run: |
+          git log --no-merges --oneline ${{ github.event.before }}..${{ github.sha }} > CHANGELOG.md
+          echo "### Release Notes" > changelog.md
+          cat CHANGELOG.md >> changelog.md
 
       - name: Upload Release Notes
         uses: softprops/action-gh-release@v1
