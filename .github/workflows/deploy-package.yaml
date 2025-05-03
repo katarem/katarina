@@ -34,7 +34,12 @@ jobs:
 
       - name: Generate Changelog
         run: |
-          LAST_TAG=$(git describe --tags --abbrev=0)
+          if git describe --tags --abbrev=0 --exclude="${{ github.ref_name }}" > /dev/null 2>&1; then
+            LAST_TAG=$(git describe --tags --abbrev=0 --exclude="${{ github.ref_name }}")
+            git log --no-merges --oneline $LAST_TAG..HEAD > CHANGELOG.md
+          else
+            git log --no-merges --oneline > CHANGELOG.md
+          fi
           git log --no-merges --oneline $LAST_TAG..${{ github.sha }} > CHANGELOG.md
           echo "### Release Notes" > changelog.md
           cat CHANGELOG.md >> changelog.md
