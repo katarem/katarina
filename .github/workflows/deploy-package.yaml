@@ -34,7 +34,8 @@ jobs:
 
       - name: Generate Changelog
         run: |
-          git log --no-merges --oneline ${{ github.event.before }}..${{ github.sha }} > CHANGELOG.md
+          LAST_TAG=$(git describe --tags --abbrev=0)
+          git log --no-merges --oneline $LAST_TAG..${{ github.sha }} > CHANGELOG.md
           echo "### Release Notes" > changelog.md
           cat CHANGELOG.md >> changelog.md
 
